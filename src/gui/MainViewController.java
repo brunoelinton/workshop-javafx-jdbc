@@ -17,7 +17,7 @@ import javafx.scene.control.ScrollPane;
 import javafx.scene.layout.VBox;
 
 public class MainViewController implements Initializable {
-	/* ITENS DO MENU */
+	/* ITENS DO MENU PRINCIPAL */
 	@FXML
 	private MenuItem menuItemSeller;		// SUBITEM PARA CADASTRO DE VENDEDORES
 	@FXML
