@@ -36,7 +36,7 @@ public class MainViewController implements Initializable {
 	
 	@FXML
 	public void onMenuItemDepartmentAction() {				// EVENTO PARA SELEÇÃO DO SUBITEM DE CADASTRO DE DEPARTAMENTOS
-		System.out.println("onMenuItemDepartmentAction");
+		loadView("/gui/DepartmentList.fxml");
 	}
 	
 	@FXML
