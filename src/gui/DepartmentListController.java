@@ -1,17 +1,26 @@
 package gui;
 
+import java.io.IOException;
 import java.net.URL;
 import java.util.List;
 import java.util.ResourceBundle;
 
 import application.Main;
+import gui.util.Alerts;
+import gui.util.Utils;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.scene.Scene;
+import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.layout.Pane;
+import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.scene.control.TableColumn;
 
@@ -44,8 +53,9 @@ public class DepartmentListController implements Initializable {
 	
 	// MÉTODO PARA O EVENTO DO BOTÃO DE ADICIONAR UM NOVO DEPARTAMENTO
 	@FXML
-	public void onBtNewAction() {
-		System.out.println("onBtNewAction");
+	public void onBtNewAction(ActionEvent event) {
+		Stage parentStage = Utils.currentStage(event);				// OBTENDO O PALCO (STAGE) PAI DE ONDE O EVENTO FOI ACIONADO
+		createDialogForm("/gui/DepartmentForm.fxml", parentStage);	// MOSTRANDO A JANELA DE INSERÇÃO DE UM NOVO DEPARTAMENTO
 	}
 	
 	@Override
@@ -73,5 +83,22 @@ public class DepartmentListController implements Initializable {
 		obsList = FXCollections.observableArrayList(list);	// CARREGANDO A LISTA DE DEPARTAMENTOS NA LISTA COMPATÍVEL COM O JAVAFX
 		tableViewDepartment.setItems(obsList);				// ASSOCIANDO A LISTA DE DEPARTAMENTOS À 'TableView' PARA QUE ELA POSSA SER MOSTRADA NA APLICAÇÃO
 	}
-
+	
+	//
+	private void createDialogForm(String absoluteName, Stage parentStage) {
+		try {
+			FXMLLoader loader = new FXMLLoader(getClass().getResource(absoluteName));
+			Pane pane = loader.load();
+			
+			Stage dialogStage = new Stage();				// CRIANDO UM NOVO PALCO PARA EXIBIR A JANELA DE INSERÇÃO DE UM NOVO DEPARTAMENTO
+			dialogStage.setTitle("Enter Department data");	// CONFIGURANDO O TÍTULO DA JANELA
+			dialogStage.setScene(new Scene(pane));			// CARREGANDO A VIEW (TELA DE INSERÇÃO DE DEPARTAMENTO)
+			dialogStage.setResizable(false);				// IMPEDINDO QUE A TELA SEJA REDIMENSIONÁVEL
+			dialogStage.initOwner(parentStage);				// INFORMANDO QUEM É O PAI DA JANELA QUE SERÁ EXIBIDA
+			dialogStage.initModality(Modality.WINDOW_MODAL);// ESPECIFICNADO QUE A JANELA SERÁ DO TIPO MODAL, OU SEJA, OUTRA JANELA NÃO SERÁ ACESSÍVEL ENQUANTO ESSA NÃO FOR FECHADA
+			dialogStage.showAndWait();						// EXIBINDO A TELA DE CADASTRO
+		} catch(IOException e) {
+			Alerts.showAlert("IO Exception", "Error loading view", e.getMessage(), AlertType.ERROR);
+		}
+	}
 }
