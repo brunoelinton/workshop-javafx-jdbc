@@ -9,8 +9,12 @@ import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
+import model.entities.Department;
 
 public class DepartmentFormController implements Initializable {
+	// DEPENDÊNCIA DO TIPO DEPARTAMENTO, SEU OBJETIVO É SERVIR DE OBJETO PARA POPULAR OS CAMPOS DE UM DEPARTAMENTO
+	private Department entity;
+	
 	/* COMPONENTES/CONTROLES DA TELA DE CADASTRO DE DEPARTAMENTO */
 	@FXML
 	private TextField txtId;
@@ -52,5 +56,18 @@ public class DepartmentFormController implements Initializable {
 	public void initializeNodes() {
 		Constraints.setTextFieldInteger(txtId);				// SOMENTE INSERÇÃO DE NÚMEROS INTEIROS
 		Constraints.setTextFieldMaxLength(txtName, 30);		// QUANTIDADE MÁXIMA DE CARACTERES NO CAMPO NOME = 30
+	}
+	
+	// MÉTODO QUE REALIZA UMA INJEÇÃO DE DEPÊNDÊNCIA INSTANCIANDO UM OBJETO DO TIPO DEPARTMENT
+	public void setDepartment(Department entity) {
+		this.entity = entity;
+	}
+	
+	// MÉTODO QUE POPULA OS CAMPOS DO FORMULÁRIO COM OS DADOS DO OBJETO DEPARTAMENTO
+	public void updateFormData() {
+		if(entity == null)
+			throw new IllegalStateException("Entity was null");
+		txtId.setText(String.valueOf(entity.getId()));
+		txtName.setText(entity.getName());
 	}
 }

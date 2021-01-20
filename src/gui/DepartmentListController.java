@@ -55,7 +55,8 @@ public class DepartmentListController implements Initializable {
 	@FXML
 	public void onBtNewAction(ActionEvent event) {
 		Stage parentStage = Utils.currentStage(event);				// OBTENDO O PALCO (STAGE) PAI DE ONDE O EVENTO FOI ACIONADO
-		createDialogForm("/gui/DepartmentForm.fxml", parentStage);	// MOSTRANDO A JANELA DE INSERÇÃO DE UM NOVO DEPARTAMENTO
+		Department obj = new Department();
+		createDialogForm(obj, "/gui/DepartmentForm.fxml", parentStage);	// MOSTRANDO A JANELA DE INSERÇÃO DE UM NOVO DEPARTAMENTO
 	}
 	
 	@Override
@@ -85,10 +86,14 @@ public class DepartmentListController implements Initializable {
 	}
 	
 	//
-	private void createDialogForm(String absoluteName, Stage parentStage) {
+	private void createDialogForm(Department obj, String absoluteName, Stage parentStage) {
 		try {
 			FXMLLoader loader = new FXMLLoader(getClass().getResource(absoluteName));
 			Pane pane = loader.load();
+			
+			DepartmentFormController controller = loader.getController();	// CARREGANDO O CONTROLLER DA TELA DE CADASTRO DE DEPARTAMENTO
+			controller.setDepartment(obj);									// INJETANDO O DEPARTAMENTO NO CONTROLADOR
+			controller.updateFormData();									// CARREGANDO DADOS DO OBJETO DEPARTAMENTO NO FORMULÁRIO
 			
 			Stage dialogStage = new Stage();				// CRIANDO UM NOVO PALCO PARA EXIBIR A JANELA DE INSERÇÃO DE UM NOVO DEPARTAMENTO
 			dialogStage.setTitle("Enter Department data");	// CONFIGURANDO O TÍTULO DA JANELA
