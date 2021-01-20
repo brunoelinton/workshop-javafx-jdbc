@@ -80,6 +80,7 @@ public class MainViewController implements Initializable {
 			// 4ª ADICIONANDO TODOS OS FILHOS DO 'VBox' DA JANELA A SER EXIBA, DENTRO DA SCENA DA JANELA PRINCIPAL
 			mainVBox.getChildren().addAll(newVBox.getChildren());
 			
+			// CARREGANDO A LISTA DE DEPARTAMENTOS
 			T controller = loader.getController();
 			initialingAction.accept(controller);
 		} catch(IOException e) {	// TRATANDO ERRO CASO HAJA ALGUM PROBLEMA NO CARRRGAMENTO DA TELA
