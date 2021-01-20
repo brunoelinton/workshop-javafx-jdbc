@@ -1,9 +1,12 @@
 package gui;
 
 import java.net.URL;
+import java.util.List;
 import java.util.ResourceBundle;
 
 import application.Main;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
@@ -13,8 +16,11 @@ import javafx.stage.Stage;
 import javafx.scene.control.TableColumn;
 
 import model.entities.Department;
+import model.services.DepartmentService;
 
 public class DepartmentListController implements Initializable {
+	private DepartmentService service = new DepartmentService();
+	
 	/* ELEMENTOS DA TELA DE DEPARTAMENTO */
 	@FXML
 	private TableView<Department> tableViewDepartment;			// TABELA QUE LISTA OS DEPARTAMENTOS
@@ -27,6 +33,12 @@ public class DepartmentListController implements Initializable {
 	
 	@FXML
 	private Button btNew;										// BOTÃO PARA INSERIR UM NOVO DEPARTAMENTO
+	
+	private ObservableList<Department> obsList;
+	
+	public void setDepartmentService(DepartmentService department) {
+		this.service = department;
+	}
 	
 	// MÉTODO PARA O EVENTO DO BOTÃO DE ADICIONAR UM NOVO DEPARTAMENTO
 	@FXML
@@ -48,6 +60,15 @@ public class DepartmentListController implements Initializable {
 		// AJUSTANDO A ALTURA DA TABELA À ALTURA DA JANELA
 		Stage stage = (Stage) Main.getMainScene().getWindow();
 		tableViewDepartment.prefHeightProperty().bind(stage.heightProperty());
+	}
+	
+	public void updateTableView() {
+		if(service == null) {
+			throw new IllegalStateException("Service was null");
+		}
+		List<Department> list = service.findAll();
+		obsList = FXCollections.observableArrayList(list);
+		tableViewDepartment.setItems(obsList);
 	}
 
 }

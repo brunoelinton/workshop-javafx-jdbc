@@ -15,6 +15,8 @@ import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.layout.VBox;
+import model.entities.Department;
+import model.services.DepartmentService;
 
 public class MainViewController implements Initializable {
 	/* ITENS DO MENU PRINCIPAL */
@@ -36,7 +38,7 @@ public class MainViewController implements Initializable {
 	
 	@FXML
 	public void onMenuItemDepartmentAction() {				// EVENTO PARA SELEÇÃO DO SUBITEM DE CADASTRO DE DEPARTAMENTOS
-		loadView("/gui/DepartmentList.fxml");
+		loadView2("/gui/DepartmentList.fxml");
 	}
 	
 	@FXML
@@ -74,6 +76,36 @@ public class MainViewController implements Initializable {
 			mainVBox.getChildren().add(mainMenu);
 			// 4ª ADICIONANDO TODOS OS FILHOS DO 'VBox' DA JANELA A SER EXIBA, DENTRO DA SCENA DA JANELA PRINCIPAL
 			mainVBox.getChildren().addAll(newVBox.getChildren());
+		} catch(IOException e) {	// TRATANDO ERRO CASO HAJA ALGUM PROBLEMA NO CARRRGAMENTO DA TELA
+			Alerts.showAlert("IO Exception", "Error loading view", e.getMessage(), AlertType.ERROR);
+		}
+	}
+	
+	// EVENTO PARA CHAMADA DE UMA OUTRA JANELA QUALQUER DA APLICAÇÃO
+	private synchronized void loadView2(String absoluteName) {
+		try {
+			// INSTANCIANDO UM OBJETO DO TIPO 'FXMLLoader' PARA CARREGAMENTO DA TELA
+			FXMLLoader loader = new FXMLLoader(getClass().getResource(absoluteName));
+			// INSTANCIANDO UM CONTAINER DO TIPO 'VBox' QUE CONTÉM A JANELA A SER EXIBIDA
+			VBox newVBox = loader.load();
+			// OBTENDO A REFERÊNCIA DA CENA DA JANELA PRINCIPAL
+			Scene mainScene = Main.getMainScene();
+			// OBETENDO A REFRÊNCIA DO CONTAINER 'VBox' DA CENA DA JANELA PRINCIPAL
+			VBox mainVBox = (VBox)((ScrollPane)mainScene.getRoot()).getContent();
+			
+			/* PRESERVANDO O MENU DA JANELA PRINCIPAL */
+			// 1ª OBTENDO O PRIMEIRO ELEMENTO FILHO DO 'VBox' DA CENA DA JANELA PRINCIPAL, OU SEJA, O 'content'			
+			Node mainMenu = mainVBox.getChildren().get(0);
+			// 2ª REMOVENDO TODOS OS FILHOS DO 'VBox' DA CENA DA JANELA PRINCILA
+			mainVBox.getChildren().clear();
+			// 3ª ADICIONANDO DE VOLTA O MENU DA CENA DA JANELA PRINCIPAL
+			mainVBox.getChildren().add(mainMenu);
+			// 4ª ADICIONANDO TODOS OS FILHOS DO 'VBox' DA JANELA A SER EXIBA, DENTRO DA SCENA DA JANELA PRINCIPAL
+			mainVBox.getChildren().addAll(newVBox.getChildren());
+			
+			DepartmentListController controller = loader.getController();
+			controller.setDepartmentService(new DepartmentService());
+			controller.updateTableView();
 		} catch(IOException e) {	// TRATANDO ERRO CASO HAJA ALGUM PROBLEMA NO CARRRGAMENTO DA TELA
 			Alerts.showAlert("IO Exception", "Error loading view", e.getMessage(), AlertType.ERROR);
 		}
