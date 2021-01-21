@@ -3,7 +3,9 @@ package gui;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.ResourceBundle;
+import java.util.Set;
 
 import db.DbException;
 import gui.listeners.DataChangeListener;
@@ -18,6 +20,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import model.entities.Department;
+import model.exceptions.ValidationException;
 import model.services.DepartmentService;
 
 public class DepartmentFormController implements Initializable {
@@ -38,7 +41,7 @@ public class DepartmentFormController implements Initializable {
 	private TextField txtName;
 	
 	@FXML
-	private Label lableErrorName;
+	private Label labelErrorName;
 	
 	@FXML
 	private Button btSave;
@@ -68,6 +71,8 @@ public class DepartmentFormController implements Initializable {
 			notifyDataChangeListeners();		// NOTIFICANDO OS OBJETOS QUE O EVENTO FOI CONCLUÍDO
 		} catch(DbException e) {
 			Alerts.showAlert("Error saving objetc", null, e.getMessage(), AlertType.ERROR);
+		} catch (ValidationException e) {
+			setErrorMessages(e.getErrors());
 		}
 	}
 	
@@ -82,9 +87,19 @@ public class DepartmentFormController implements Initializable {
 	private Department getFormData() {
 		Department obj = new Department();
 		
+		ValidationException exception = new ValidationException("Validation error");
+		
 		obj.setId(Utils.tryParseToInt(txtId.getText()));
+		
+		// VERIFICANDO SE O CAMPO NOME ESTÁ VAZIO
+		if(txtName.getText() == null || txtName.getText().trim().equals("")) {
+			exception.addError("name", "Field can't be empty");
+		}
 		obj.setName(txtName.getText());
 		
+		// SE HOUVER PELO MENOS UM ERRRO NA MINHA COLEÇÃO, ENTÃO SERÁ LANÇADA A EXCEÇÃO
+		if(exception.getErrors().size() > 0)
+			throw exception;
 		return obj;
 	}
 
@@ -126,5 +141,13 @@ public class DepartmentFormController implements Initializable {
 			throw new IllegalStateException("Entity was null");
 		txtId.setText(String.valueOf(entity.getId()));
 		txtName.setText(entity.getName());
+	}
+	
+	// MÉTODO QUE MOSTRA O ERRO NA TELA DA APLICAÇÃO
+	public void setErrorMessages(Map<String, String> errors) {
+		Set<String> fields = errors.keySet();	// DEFININDO UM CONJUNTO COM O CAMPO DE NOME DOS ERROS
+		
+		if(fields.contains("name"))				// VERIFICANDO SE O CONJUTO SET TEM ALGUM ERRO COM O CAMPO NOME
+			labelErrorName.setText(errors.get("name"));
 	}
 }
