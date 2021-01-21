@@ -3,17 +3,26 @@ package gui;
 import java.net.URL;
 import java.util.ResourceBundle;
 
+import db.DbException;
+import gui.util.Alerts;
 import gui.util.Constraints;
+import gui.util.Utils;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import model.entities.Department;
+import model.services.DepartmentService;
 
 public class DepartmentFormController implements Initializable {
-	// DEPENDÊNCIA DO TIPO DEPARTAMENTO, SEU OBJETIVO É SERVIR DE OBJETO PARA POPULAR OS CAMPOS DE UM DEPARTAMENTO
+	// DEPENDÊNCIA DO TIPO 'DEPARTAMENTO', SEU OBJETIVO É SERVIR DE OBJETO PARA POPULAR OS CAMPOS DE UM DEPARTAMENTO
 	private Department entity;
+	
+	// DEPENDÊNCIA DO TIPO 'SERVIÇO DE DEPARTAMENTO', SEU OBJETIVO É INSERIR OU ATUALIZAR UM DEPARTAMENTO
+	private DepartmentService service;
 	
 	/* COMPONENTES/CONTROLES DA TELA DE CADASTRO DE DEPARTAMENTO */
 	@FXML
@@ -37,14 +46,38 @@ public class DepartmentFormController implements Initializable {
 	
 	// EVENTO QUE SALVA UM DEPARTAMENTO
 	@FXML
-	public void onBtSaveAction() {
-		System.out.println("onBtSaveAction");
+	public void onBtSaveAction(ActionEvent event) {
+		if(entity == null) {			// VERIFICANDO SE O DEPARTAMENTO NÃO FOI INJETADO			
+			throw new IllegalStateException("Entity was null");
+		}
+		
+		if(service == null) {			// VERIFICANDO SE O SERVIÇO DE DEPARTAMENTO NÃO FOI INJETADO
+			throw new IllegalStateException("Service was null");
+		}
+		
+		try {
+			entity = getFormData();				// OBTENDO OS DADOS DO FORMULÁRIO DE CADASTRO
+			service.saveOrUpdate(entity);		// SALVANDO OU ATUALIZANDO O DEPARTMENTO NO BANCO DE DADOS
+			Utils.currentStage(event).close();	// FECHANDO A JANELA DE CADASTRO APÓS A OPERAÇÃO
+		} catch(DbException e) {
+			Alerts.showAlert("Error saving objetc", null, e.getMessage(), AlertType.ERROR);
+		}
 	}
 	
+	// MÉTODO QUE PEGA OS DADOS DO FORMULÁRIO DE CADASTRO DE DEPARTAMENTO NO MOMENTO DE SAVÁ-LO NO BANCO DE DADOS
+	private Department getFormData() {
+		Department obj = new Department();
+		
+		obj.setId(Utils.tryParseToInt(txtId.getText()));
+		obj.setName(txtName.getText());
+		
+		return obj;
+	}
+
 	// EVENTO QUE CANCELA A OPERAÇÃO DE CADASTRO DE UM DEPARTAMENTO
 	@FXML
-	public void onBtCancelAction() {
-		System.out.println("onBtCancelAction");
+	public void onBtCancelAction(ActionEvent event) {
+		Utils.currentStage(event).close();	// FECHANDO A JANELA DE CADASTRO APÓS A OPERAÇÃO
 	}
 	
 	@Override
@@ -61,6 +94,11 @@ public class DepartmentFormController implements Initializable {
 	// MÉTODO QUE REALIZA UMA INJEÇÃO DE DEPÊNDÊNCIA INSTANCIANDO UM OBJETO DO TIPO DEPARTMENT
 	public void setDepartment(Department entity) {
 		this.entity = entity;
+	}
+	
+	// MÉTODO QUE REALIZA UMA INJEÇÃO DE DEPÊNCIA INSTANCIANDO UM OBJETO DO TIPO 'SERVIÇO DE DEPARTAMENTO'
+	public void setDepartmentService(DepartmentService service) {
+		this.service = service;
 	}
 	
 	// MÉTODO QUE POPULA OS CAMPOS DO FORMULÁRIO COM OS DADOS DO OBJETO DEPARTAMENTO

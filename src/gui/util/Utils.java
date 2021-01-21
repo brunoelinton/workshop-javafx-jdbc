@@ -9,4 +9,13 @@ public class Utils {
 	public static Stage currentStage(ActionEvent event) {
 		return (Stage) ((Node) event.getSource()).getScene().getWindow();
 	}
+	
+	// MÉTODO QUE TENTA REALIZAR A CONVERSÃO DO CONTEÚDO DE UM 'TextField' PARA INTEIRO
+	public static Integer tryParseToInt(String str) {
+		try {
+			return Integer.parseInt(str);
+		} catch (NumberFormatException e) {
+			return null;
+		}
+	}
 }

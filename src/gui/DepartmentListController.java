@@ -93,6 +93,7 @@ public class DepartmentListController implements Initializable {
 			
 			DepartmentFormController controller = loader.getController();	// CARREGANDO O CONTROLLER DA TELA DE CADASTRO DE DEPARTAMENTO
 			controller.setDepartment(obj);									// INJETANDO O DEPARTAMENTO NO CONTROLADOR
+			controller.setDepartmentService(new DepartmentService());		// INJETANDO O SERVIÇO DE DEPARTAMENTO NO CONTROLADOR
 			controller.updateFormData();									// CARREGANDO DADOS DO OBJETO DEPARTAMENTO NO FORMULÁRIO
 			
 			Stage dialogStage = new Stage();				// CRIANDO UM NOVO PALCO PARA EXIBIR A JANELA DE INSERÇÃO DE UM NOVO DEPARTAMENTO
