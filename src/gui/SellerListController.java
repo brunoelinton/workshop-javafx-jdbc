@@ -1,6 +1,7 @@
 package gui;
 
 import java.net.URL;
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 import java.util.ResourceBundle;
@@ -33,13 +34,22 @@ public class SellerListController implements Initializable, DataChangeListener {
 	
 	/* ELEMENTOS DA TELA DE VENDEDOR */
 	@FXML
-	private TableView<Seller> tableViewSeller;			// TABELA QUE LISTA OS VENDEDORS
+	private TableView<Seller> tableViewSeller;					// TABELA QUE LISTA OS VENDEDORS
 	
 	@FXML
-	private TableColumn<Seller, Integer> tableColumnId;		//	COLUNA REFERENTE AO ID DO VENDEDOR
+	private TableColumn<Seller, Integer> tableColumnId;			//	COLUNA REFERENTE AO ID DO VENDEDOR
 	
 	@FXML
-	private TableColumn<Seller, String> tableColumnName;	//	COLUNA REFERENTE AO NOME DO VENDEDOR
+	private TableColumn<Seller, String> tableColumnName;		//	COLUNA REFERENTE AO NOME DO VENDEDOR
+	
+	@FXML
+	private TableColumn<Seller, String> tableColumnEmail;		//	COLUNA REFERENTE AO NOME DO VENDEDOR
+	
+	@FXML
+	private TableColumn<Seller, Date> tableColumnBirthDate;	//	COLUNA REFERENTE AO NOME DO VENDEDOR
+	
+	@FXML
+	private TableColumn<Seller, Double> tableColumnBaseSalary;	//	COLUNA REFERENTE AO NOME DO VENDEDOR
 	
 	@FXML
 	private TableColumn<Seller, Seller> tableColumnEDIT;//	COLUNA REFERENTE PARA EXIBIR OS BOTÕES DE ATUALIZAÇÃO
@@ -75,6 +85,14 @@ public class SellerListController implements Initializable, DataChangeListener {
 	private void initializeNodes() {
 		tableColumnId.setCellValueFactory(new PropertyValueFactory<>("id"));
 		tableColumnName.setCellValueFactory(new PropertyValueFactory<>("name"));
+		tableColumnEmail.setCellValueFactory(new PropertyValueFactory<>("email"));
+		tableColumnBirthDate.setCellValueFactory(new PropertyValueFactory<>("birthDate"));
+		
+		tableColumnBaseSalary.setCellValueFactory(new PropertyValueFactory<>("baseSalary"));
+		
+		// FORMATANDO A DATA E O SALÁRIO
+		Utils.formatTableColumnDate(tableColumnBirthDate, "dd/MM/yyyy");
+		Utils.formatTableColumnDouble(tableColumnBaseSalary, 2);
 		
 		// AJUSTANDO A ALTURA DA TABELA À ALTURA DA JANELA
 		Stage stage = (Stage) Main.getMainScene().getWindow();
