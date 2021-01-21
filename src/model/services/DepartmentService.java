@@ -24,4 +24,9 @@ public class DepartmentService {
 			dao.update(obj);
 		}
 	}
+	
+	// MÉTODO QUE EXCLUI UM DEPARTAMENTO
+	public void remove(Department obj) {
+		dao.deleteById(obj.getId());
+	}
 }
