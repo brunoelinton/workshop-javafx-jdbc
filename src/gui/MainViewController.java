@@ -17,6 +17,7 @@ import javafx.scene.control.MenuItem;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.layout.VBox;
 import model.services.DepartmentService;
+import model.services.SellerService;
 
 public class MainViewController implements Initializable {
 	/* ITENS DO MENU PRINCIPAL */
@@ -33,7 +34,10 @@ public class MainViewController implements Initializable {
 	/* EVENTOS PARA CADA UM DOS ITENS DO MENU */
 	@FXML
 	public void onMenuItemSellerAction() {					// EVENTO PARA SELEÇÃO DO SUBITEM DE CADASTRO DE VENDEDORES
-		System.out.println("onMenuItemSellerAction");
+		loadView("/gui/SellerList.fxml", (SellerListController controller) -> {
+			controller.setSellerService(new SellerService());
+			controller.updateTableView();
+		});
 	}
 	
 	@FXML
