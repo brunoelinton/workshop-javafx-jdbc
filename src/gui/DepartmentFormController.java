@@ -1,9 +1,12 @@
 package gui;
 
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.ResourceBundle;
 
 import db.DbException;
+import gui.listeners.DataChangeListener;
 import gui.util.Alerts;
 import gui.util.Constraints;
 import gui.util.Utils;
@@ -23,6 +26,9 @@ public class DepartmentFormController implements Initializable {
 	
 	// DEPENDÊNCIA DO TIPO 'SERVIÇO DE DEPARTAMENTO', SEU OBJETIVO É INSERIR OU ATUALIZAR UM DEPARTAMENTO
 	private DepartmentService service;
+	
+	// LISTA DE OBJETOS INTERESSADOS EM RECEBER O EVENTO
+	private List<DataChangeListener> dataChangeListeners = new ArrayList<>();
 	
 	/* COMPONENTES/CONTROLES DA TELA DE CADASTRO DE DEPARTAMENTO */
 	@FXML
@@ -59,11 +65,19 @@ public class DepartmentFormController implements Initializable {
 			entity = getFormData();				// OBTENDO OS DADOS DO FORMULÁRIO DE CADASTRO
 			service.saveOrUpdate(entity);		// SALVANDO OU ATUALIZANDO O DEPARTMENTO NO BANCO DE DADOS
 			Utils.currentStage(event).close();	// FECHANDO A JANELA DE CADASTRO APÓS A OPERAÇÃO
+			notifyDataChangeListeners();		// NOTIFICANDO OS OBJETOS QUE O EVENTO FOI CONCLUÍDO
 		} catch(DbException e) {
 			Alerts.showAlert("Error saving objetc", null, e.getMessage(), AlertType.ERROR);
 		}
 	}
 	
+	// MÉTODO QUE NOTIFICA OS OBJETOS QUE O EVENTO OCORREU
+	private void notifyDataChangeListeners() {
+		for(DataChangeListener listener: dataChangeListeners)
+			listener.onDataChanged();
+		
+	}
+
 	// MÉTODO QUE PEGA OS DADOS DO FORMULÁRIO DE CADASTRO DE DEPARTAMENTO NO MOMENTO DE SAVÁ-LO NO BANCO DE DADOS
 	private Department getFormData() {
 		Department obj = new Department();
@@ -99,6 +113,11 @@ public class DepartmentFormController implements Initializable {
 	// MÉTODO QUE REALIZA UMA INJEÇÃO DE DEPÊNCIA INSTANCIANDO UM OBJETO DO TIPO 'SERVIÇO DE DEPARTAMENTO'
 	public void setDepartmentService(DepartmentService service) {
 		this.service = service;
+	}
+	
+	// MÉTODO QUE ADICIONA OS OBJETOS INTERESSADOS NO EVENTO À LISTA
+	public void subscribeDataChangeListener(DataChangeListener listener) {
+		dataChangeListeners.add(listener);
 	}
 	
 	// MÉTODO QUE POPULA OS CAMPOS DO FORMULÁRIO COM OS DADOS DO OBJETO DEPARTAMENTO
