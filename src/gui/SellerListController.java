@@ -1,5 +1,6 @@
 package gui;
 
+import java.io.IOException;
 import java.net.URL;
 import java.util.Date;
 import java.util.List;
@@ -16,7 +17,9 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.scene.Scene;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
 import javafx.scene.control.ButtonType;
@@ -24,6 +27,8 @@ import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.layout.Pane;
+import javafx.stage.Modality;
 import javafx.stage.Stage;
 import model.entities.Seller;
 import model.services.SellerService;
@@ -113,25 +118,25 @@ public class SellerListController implements Initializable, DataChangeListener {
 	
 	//
 	private void createDialogForm(Seller obj, String absoluteName, Stage parentStage) {
-//		try {
-//			FXMLLoader loader = new FXMLLoader(getClass().getResource(absoluteName));
-//			Pane pane = loader.load();
-//			
-//			SellerFormController controller = loader.getController();	// CARREGANDO O CONTROLLER DA TELA DE CADASTRO DE VENDEDOR
-//			controller.setSeller(obj);									// INJETANDO O VENDEDOR NO CONTROLADOR
-//			controller.setSellerService(new SellerService());		// INJETANDO O SERVIÇO DE VENDEDOR NO CONTROLADOR
-//			controller.updateFormData();									// CARREGANDO DADOS DO OBJETO VENDEDOR NO FORMULÁRIO
-//			controller.subscribeDataChangeListener(this);					// SE INSCREVENDO PARA O EVENTO DE INSERIR/ATUALIZAR UM VENDEDOR
-//			Stage dialogStage = new Stage();				// CRIANDO UM NOVO PALCO PARA EXIBIR A JANELA DE INSERÇÃO DE UM NOVO VENDEDOR
-//			dialogStage.setTitle("Enter Seller data");	// CONFIGURANDO O TÍTULO DA JANELA
-//			dialogStage.setScene(new Scene(pane));			// CARREGANDO A VIEW (TELA DE INSERÇÃO DE VENDEDOR)
-//			dialogStage.setResizable(false);				// IMPEDINDO QUE A TELA SEJA REDIMENSIONÁVEL
-//			dialogStage.initOwner(parentStage);				// INFORMANDO QUEM É O PAI DA JANELA QUE SERÁ EXIBIDA
-//			dialogStage.initModality(Modality.WINDOW_MODAL);// ESPECIFICNADO QUE A JANELA SERÁ DO TIPO MODAL, OU SEJA, OUTRA JANELA NÃO SERÁ ACESSÍVEL ENQUANTO ESSA NÃO FOR FECHADA
-//			dialogStage.showAndWait();						// EXIBINDO A TELA DE CADASTRO
-//		} catch(IOException e) {
-//			Alerts.showAlert("IO Exception", "Error loading view", e.getMessage(), AlertType.ERROR);
-//		}
+		try {
+			FXMLLoader loader = new FXMLLoader(getClass().getResource(absoluteName));
+			Pane pane = loader.load();
+			
+			SellerFormController controller = loader.getController();	// CARREGANDO O CONTROLLER DA TELA DE CADASTRO DE VENDEDOR
+			controller.setSeller(obj);									// INJETANDO O VENDEDOR NO CONTROLADOR
+			controller.setSellerService(new SellerService());		// INJETANDO O SERVIÇO DE VENDEDOR NO CONTROLADOR
+			controller.updateFormData();									// CARREGANDO DADOS DO OBJETO VENDEDOR NO FORMULÁRIO
+			controller.subscribeDataChangeListener(this);					// SE INSCREVENDO PARA O EVENTO DE INSERIR/ATUALIZAR UM VENDEDOR
+			Stage dialogStage = new Stage();				// CRIANDO UM NOVO PALCO PARA EXIBIR A JANELA DE INSERÇÃO DE UM NOVO VENDEDOR
+			dialogStage.setTitle("Enter Seller data");	// CONFIGURANDO O TÍTULO DA JANELA
+			dialogStage.setScene(new Scene(pane));			// CARREGANDO A VIEW (TELA DE INSERÇÃO DE VENDEDOR)
+			dialogStage.setResizable(false);				// IMPEDINDO QUE A TELA SEJA REDIMENSIONÁVEL
+			dialogStage.initOwner(parentStage);				// INFORMANDO QUEM É O PAI DA JANELA QUE SERÁ EXIBIDA
+			dialogStage.initModality(Modality.WINDOW_MODAL);// ESPECIFICNADO QUE A JANELA SERÁ DO TIPO MODAL, OU SEJA, OUTRA JANELA NÃO SERÁ ACESSÍVEL ENQUANTO ESSA NÃO FOR FECHADA
+			dialogStage.showAndWait();						// EXIBINDO A TELA DE CADASTRO
+		} catch(IOException e) {
+			Alerts.showAlert("IO Exception", "Error loading view", e.getMessage(), AlertType.ERROR);
+		}
 	}
 
 	// MÉTODO QUE ESCUTA A CLASSE 'DEPARTMENTFORMCONTROLLER' ESPERANDO PELO ACIONAMENTO DO EVENTO
