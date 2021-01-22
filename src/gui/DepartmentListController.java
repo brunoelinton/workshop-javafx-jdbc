@@ -117,6 +117,7 @@ public class DepartmentListController implements Initializable, DataChangeListen
 			dialogStage.initModality(Modality.WINDOW_MODAL);// ESPECIFICNADO QUE A JANELA SERÁ DO TIPO MODAL, OU SEJA, OUTRA JANELA NÃO SERÁ ACESSÍVEL ENQUANTO ESSA NÃO FOR FECHADA
 			dialogStage.showAndWait();						// EXIBINDO A TELA DE CADASTRO
 		} catch(IOException e) {
+			e.printStackTrace();
 			Alerts.showAlert("IO Exception", "Error loading view", e.getMessage(), AlertType.ERROR);
 		}
 	}

@@ -31,6 +31,7 @@ import javafx.scene.layout.Pane;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import model.entities.Seller;
+import model.services.DepartmentService;
 import model.services.SellerService;
 
 public class SellerListController implements Initializable, DataChangeListener {
@@ -120,20 +121,22 @@ public class SellerListController implements Initializable, DataChangeListener {
 		try {
 			FXMLLoader loader = new FXMLLoader(getClass().getResource(absoluteName));
 			Pane pane = loader.load();
+			SellerFormController controller = loader.getController();				// CARREGANDO O CONTROLLER DA TELA DE CADASTRO DE VENDEDOR
 			
-			SellerFormController controller = loader.getController();	// CARREGANDO O CONTROLLER DA TELA DE CADASTRO DE VENDEDOR
-			controller.setSeller(obj);									// INJETANDO O VENDEDOR NO CONTROLADOR
-			controller.setSellerService(new SellerService());		// INJETANDO O SERVIÇO DE VENDEDOR NO CONTROLADOR
-			controller.updateFormData();									// CARREGANDO DADOS DO OBJETO VENDEDOR NO FORMULÁRIO
-			controller.subscribeDataChangeListener(this);					// SE INSCREVENDO PARA O EVENTO DE INSERIR/ATUALIZAR UM VENDEDOR
-			Stage dialogStage = new Stage();				// CRIANDO UM NOVO PALCO PARA EXIBIR A JANELA DE INSERÇÃO DE UM NOVO VENDEDOR
-			dialogStage.setTitle("Enter Seller data");	// CONFIGURANDO O TÍTULO DA JANELA
-			dialogStage.setScene(new Scene(pane));			// CARREGANDO A VIEW (TELA DE INSERÇÃO DE VENDEDOR)
-			dialogStage.setResizable(false);				// IMPEDINDO QUE A TELA SEJA REDIMENSIONÁVEL
-			dialogStage.initOwner(parentStage);				// INFORMANDO QUEM É O PAI DA JANELA QUE SERÁ EXIBIDA
-			dialogStage.initModality(Modality.WINDOW_MODAL);// ESPECIFICNADO QUE A JANELA SERÁ DO TIPO MODAL, OU SEJA, OUTRA JANELA NÃO SERÁ ACESSÍVEL ENQUANTO ESSA NÃO FOR FECHADA
-			dialogStage.showAndWait();						// EXIBINDO A TELA DE CADASTRO
+			controller.setSeller(obj);												// INJETANDO O VENDEDOR NO CONTROLADOR
+			controller.setServices(new SellerService(), new DepartmentService());	// INJETANDO OS SERVIÇSO DE VENDEDOR E DEPARTAMENTO NO CONTROLADOR
+			controller.loadAssociatedObjects();										// CARREGANDO OS DEPARTAMENTOS
+			controller.updateFormData();											// CARREGANDO DADOS DO OBJETO VENDEDOR NO FORMULÁRIO
+			controller.subscribeDataChangeListener(this);							// SE INSCREVENDO PARA O EVENTO DE INSERIR/ATUALIZAR UM VENDEDOR
+			Stage dialogStage = new Stage();										// CRIANDO UM NOVO PALCO PARA EXIBIR A JANELA DE INSERÇÃO DE UM NOVO VENDEDOR
+			dialogStage.setTitle("Enter Seller data");								// CONFIGURANDO O TÍTULO DA JANELA
+			dialogStage.setScene(new Scene(pane));									// CARREGANDO A VIEW (TELA DE INSERÇÃO DE VENDEDOR)
+			dialogStage.setResizable(false);										// IMPEDINDO QUE A TELA SEJA REDIMENSIONÁVEL
+			dialogStage.initOwner(parentStage);										// INFORMANDO QUEM É O PAI DA JANELA QUE SERÁ EXIBIDA
+			dialogStage.initModality(Modality.WINDOW_MODAL);						// ESPECIFICNADO QUE A JANELA SERÁ DO TIPO MODAL, OU SEJA, OUTRA JANELA NÃO SERÁ ACESSÍVEL ENQUANTO ESSA NÃO FOR FECHADA
+			dialogStage.showAndWait();												// EXIBINDO A TELA DE CADASTRO
 		} catch(IOException e) {
+			e.printStackTrace();
 			Alerts.showAlert("IO Exception", "Error loading view", e.getMessage(), AlertType.ERROR);
 		}
 	}
