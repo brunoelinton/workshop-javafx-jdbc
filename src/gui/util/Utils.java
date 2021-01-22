@@ -29,6 +29,15 @@ public class Utils {
 		}
 	}
 	
+	// MÉTODO QUE TENTA REALIZAR A CONVERSÃO DO CONTEÚDO DE UM 'TextField' PARA DOUBLE
+	public static Double tryParseToDouble(String str) {
+		try {
+			return Double.parseDouble(str);
+		} catch (NumberFormatException e) {
+			return null;
+		}
+	}
+	
 	// MÉTODO PARA FORMATAR A EXIBIÇÃO DA DATA
 	public static <T> void formatTableColumnDate(TableColumn<T, Date> tableColumn, String format) {
 		tableColumn.setCellFactory(column -> {

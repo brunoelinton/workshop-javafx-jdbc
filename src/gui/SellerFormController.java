@@ -1,9 +1,11 @@
 package gui;
 
 import java.net.URL;
+import java.time.Instant;
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -135,6 +137,29 @@ public class SellerFormController implements Initializable {
 		}
 		obj.setName(txtName.getText());
 		
+		// VERIFICANDO SE O CAMPO EMAIL ESTÁ VAZIO
+		if(txtEmail.getText() == null || txtEmail.getText().trim().equals("")) {
+			exception.addError("email", "Field can't be empty");
+		}
+		obj.setEmail(txtEmail.getText());
+		
+		// VERIFICANDO SE A DATA NÃO FOI SELECIONADA NO DATE PICKER
+		if(dpBithDate.getValue() == null) {
+			exception.addError("birthDate", "Field can't be empty");
+		} else {
+			Instant instante = Instant.from(dpBithDate.getValue().atStartOfDay(ZoneId.systemDefault()));
+			obj.setBirthDate(Date.from(instante));
+		}
+		
+		
+		// VERIFICANDO SE O CAMPO SALÁRIO ESTÁ VAZIO
+		if(txtBaseSalary.getText() == null || txtBaseSalary.getText().trim().equals("")) {
+			exception.addError("baseSalary", "Field can't be empty");
+		}
+		obj.setBaseSalary(Utils.tryParseToDouble(txtBaseSalary.getText()));
+		
+		obj.setDepartment(comboBoxDepartment.getValue());
+		
 		// SE HOUVER PELO MENOS UM ERRRO NA MINHA COLEÇÃO, ENTÃO SERÁ LANÇADA A EXCEÇÃO
 		if(exception.getErrors().size() > 0)
 			throw exception;
@@ -210,8 +235,10 @@ public class SellerFormController implements Initializable {
 	public void setErrorMessages(Map<String, String> errors) {
 		Set<String> fields = errors.keySet();	// DEFININDO UM CONJUNTO COM O CAMPO DE NOME DOS ERROS
 		
-		if(fields.contains("name"))				// VERIFICANDO SE O CONJUTO SET TEM ALGUM ERRO COM O CAMPO NOME
-			labelErrorName.setText(errors.get("name"));
+		labelErrorName.setText(fields.contains("name") ? errors.get("name") : "");						// VERIFICANDO SE O CONJUTO SET TEM ALGUM ERRO COM O CAMPO NOME
+		labelErrorEmail.setText(fields.contains("email") ? errors.get("email") : "");					// VERIFICANDO SE O CONJUTO SET TEM ALGUM ERRO COM O CAMPO EMAIL
+		labelErrorBaseSalary.setText(fields.contains("baseSalary") ? errors.get("baseSalary") : "");	// VERIFICANDO SE O CONJUTO SET TEM ALGUM ERRO COM O CAMPO SALÁRIO BASE
+		labelErrorBirthDate.setText(fields.contains("birthDate") ? errors.get("birthDate") : "");		// VERIFICANDO SE O CONJUTO SET TEM ALGUM ERRO COM O CAMPO DATA DE ANIVERSÁRIO
 	}
 	
 	// MÉTODO QUE INICIALIZA O COMBOBOX COM A LISTA DE DEPARTAMENTOS
