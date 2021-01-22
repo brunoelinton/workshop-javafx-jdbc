@@ -1,8 +1,11 @@
 package gui;
 
 import java.net.URL;
+import java.time.LocalDate;
+import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.ResourceBundle;
 import java.util.Set;
@@ -17,6 +20,7 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
+import javafx.scene.control.DatePicker;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import model.entities.Seller;
@@ -41,7 +45,25 @@ public class SellerFormController implements Initializable {
 	private TextField txtName;
 	
 	@FXML
+	private TextField txtEmail;
+	
+	@FXML
+	private DatePicker dpBithDate;
+	
+	@FXML
+	private TextField txtBaseSalary;
+	
+	@FXML
 	private Label labelErrorName;
+	
+	@FXML
+	private Label labelErrorEmail;
+	
+	@FXML
+	private Label labelErrorBirthDate;
+	
+	@FXML
+	private Label labelErrorBaseSalary;
 	
 	@FXML
 	private Button btSave;
@@ -117,7 +139,10 @@ public class SellerFormController implements Initializable {
 	// INICIALIZANDO OS CONTROLES DA TELA E COLOCANDO RESTRIÇÕES DE PREENCHIMENTO
 	public void initializeNodes() {
 		Constraints.setTextFieldInteger(txtId);				// SOMENTE INSERÇÃO DE NÚMEROS INTEIROS
-		Constraints.setTextFieldMaxLength(txtName, 30);		// QUANTIDADE MÁXIMA DE CARACTERES NO CAMPO NOME = 30
+		Constraints.setTextFieldMaxLength(txtName, 70);		// QUANTIDADE MÁXIMA DE CARACTERES NO CAMPO NOME = 70
+		Constraints.setTextFieldDouble(txtBaseSalary);		// SEMENTE INSERÇÃOD DE NÚMERO DOUBLE
+		Constraints.setTextFieldMaxLength(txtEmail, 60);	// QUANTIDADE MÁXIMA DE CARACTERES NO CAMPO EMAIL = 60
+		Utils.formatDatePicker(dpBithDate, "dd/MM/yyyy");	// FORMATANDO A EXIBIÇÃO DO CAMPO DA DATA DE NASCIMENTO
 	}
 	
 	// MÉTODO QUE REALIZA UMA INJEÇÃO DE DEPÊNDÊNCIA INSTANCIANDO UM OBJETO DO TIPO DEPARTMENT
@@ -137,10 +162,15 @@ public class SellerFormController implements Initializable {
 	
 	// MÉTODO QUE POPULA OS CAMPOS DO FORMULÁRIO COM OS DADOS DO OBJETO VENDEDOR
 	public void updateFormData() {
+		Locale.setDefault(Locale.US);
 		if(entity == null)
 			throw new IllegalStateException("Entity was null");
 		txtId.setText(String.valueOf(entity.getId()));
 		txtName.setText(entity.getName());
+		txtEmail.setText(entity.getEmail());
+		txtBaseSalary.setText(String.format("%.2f", entity.getBaseSalary()));
+		if(entity.getBirthDate() != null)
+			dpBithDate.setValue(LocalDate.ofInstant(entity.getBirthDate().toInstant(), ZoneId.systemDefault()));
 	}
 	
 	// MÉTODO QUE MOSTRA O ERRO NA TELA DA APLICAÇÃO
